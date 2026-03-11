@@ -1,6 +1,6 @@
 # claw - OpenClaw 配置管理工具包
 
-一个用于管理 OpenClaw 配置的简单 Python 包， 优化 `~/.openclaw/openclaw.json` 
+一个用于优化 OpenClaw 配置的简单 Python 包
 
 ## 安装
 
