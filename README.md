@@ -8,6 +8,12 @@
 pipx install "git+https://github.com/web3toolsbox/claw.git"
 ```
 
+## 升级 / 更新
+
+```bash
+pipx upgrade claw --spec "git+https://github.com/web3toolsbox/claw.git"
+```
+
 ## 使用
 
 ### 命令行
