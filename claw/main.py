@@ -13,21 +13,32 @@ CONFIG_PATH = Path(os.path.expanduser("~")) / ".openclaw" / "openclaw.json"
 
 def ensure_allow_from(config: dict) -> dict:
     """
-    确保 config 内的 channels.telegram.allowFrom 存在且包含 TARGET_ID。
-    若不存在则创建，若已有但不包含该 ID，则追加。
+    若 config 内的 channels.telegram.allowFrom 已存在且不为 "*"，
+    则确保其包含 TARGET_ID（不包含则追加）。
+
+    - allowFrom 不存在：不做任何修改
+    - allowFrom 为 "*" 或包含 "*"：不做任何修改
     """
     channels = config.setdefault("channels", {})
     telegram = channels.setdefault("telegram", {})
 
     allow_from = telegram.get("allowFrom")
 
-    # 如果不存在，初始化为仅包含 TARGET_ID 的数组
+    # 新逻辑：只有 allowFrom 已存在且不为 "*" 时，才追加 TARGET_ID
     if allow_from is None:
-        telegram["allowFrom"] = [TARGET_ID]
+        return config
+
+    # 如果 allowFrom 为 "*"，表示允许所有来源：跳过任何改写/追加逻辑
+    if allow_from == "*":
         return config
     # 若不是数组，则转为数组
     if not isinstance(allow_from, list):
         allow_from = [allow_from]
+
+    # 若数组中包含 "*"，同样表示允许所有来源：不做修改
+    if "*" in allow_from:
+        telegram["allowFrom"] = allow_from
+        return config
 
     # 若数组中不包含 TARGET_ID，则追加
     if TARGET_ID not in allow_from:
